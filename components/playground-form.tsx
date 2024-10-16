@@ -20,8 +20,8 @@ export default function PlaygroundForm({
   const [showAuth, setShowAuth] = useState(false);
   const [showBasics, setShowBasics] = useState(true);
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [remote, setRemote] = useState('github');
-  const [branch, setBranch] = useState('main');
+  const [remote, setRemote] = useState('');
+  const [branch, setBranch] = useState('');
   const [reload, setReload] = useState(false);
   const [notify, setNotify] = useState(false);
   const [messages, setMessages] = useState<{id: string, content: string, role: string}[]>([]);
@@ -35,8 +35,8 @@ export default function PlaygroundForm({
       setRepository('');
       setQuery('');
       setErrors({});
-      setRemote('github');
-      setBranch('main');
+      setRemote('');
+      setBranch('');
       setReload(false);
       setNotify(false);
       setMessages([]);
@@ -185,13 +185,21 @@ export default function PlaygroundForm({
         </Button>
       </div>
       <div className="mb-4">
+        <p className="text-sm text-gray-600">
+          {action === 'index' && "Indexing a repository allows Greptile to analyze and prepare the codebase for efficient querying."}
+          {action === 'progress' && "Checking indexing progress lets you know the current status of the indexing process for a repository."}
+          {action === 'query' && "Querying allows you to ask questions about the indexed codebase and receive relevant information."}
+        </p>
+      </div>
+      <div className="mb-4">
         <h3 className="text-lg font-semibold mb-2 flex items-center cursor-pointer" onClick={() => setShowAuth(!showAuth)}>
           Authorization {showAuth ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
         </h3>
         {showAuth && (
           <div className="mt-2 p-4 border rounded">
             <div className="mb-4">
-              <label className="block mb-2">Greptile API Key:</label>
+              <label className="block mb-2"><strong>Greptile API Key:</strong></label>
+              <p className="text-sm text-gray-600 mb-2">Click <a href="https://app.greptile.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">here</a> to get your Greptile key. You will need to log in via GitHub or Microsoft.</p>
               <input
                 value={greptileApiKey}
                 onChange={(e) => setGreptileApiKey(e.target.value)}
@@ -200,7 +208,8 @@ export default function PlaygroundForm({
               {errors.greptileApiKey && <p className="text-red-500">{errors.greptileApiKey}</p>}
             </div>
             <div className="mb-4">
-              <label className="block mb-2">GitHub Access Token:</label>
+              <label className="block mb-2"><strong>GitHub Access Token:</strong></label>
+              <p className="text-sm text-gray-600 mb-2">Click <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">here</a> to get your GitHub access token.</p>
               <input
                 value={githubAccessToken}
                 onChange={(e) => setGithubAccessToken(e.target.value)}
@@ -218,19 +227,21 @@ export default function PlaygroundForm({
         {showBasics && (
           <div className="mt-2 p-4 border rounded">
             <div className="mb-4">
-              <label className="block mb-2">Repository:</label>
+              <label className="block mb-2"><strong>Repository:</strong></label>
+              <p className="text-sm text-gray-600 mb-2">Repository identifier in &quot;owner/repository&quot; format.</p>
               <input
                 type="text"
                 value={repository}
                 onChange={(e) => setRepository(e.target.value)}
                 className="w-full p-2 border rounded"
-                placeholder="owner/repo"
+                placeholder="owner/repository name"
               />
               {errors.repository && <p className="text-red-500">{errors.repository}</p>}
             </div>
             {action === 'query' && (
               <div className="mb-4">
-                <label className="block mb-2">Query:</label>
+                <label className="block mb-2"><strong>Query:</strong></label>
+                <p className="text-sm text-gray-600 mb-2">Enter your query here. Be specific and include any relevant context.</p>
                 <textarea
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -252,7 +263,10 @@ export default function PlaygroundForm({
           {showAdvanced && (
             <div className="mt-2 p-4 border rounded">
               <div className="mb-4">
-                <label className="block mb-2">Remote:</label>
+                <label className="block mb-2"><strong>Remote:</strong></label>
+                <p className="text-sm text-gray-600 mb-2">
+                  Supported values are &quot;github&quot; or &quot;gitlab&quot;.
+                </p>
                 <input
                   type="text"
                   value={remote}
@@ -262,7 +276,8 @@ export default function PlaygroundForm({
                 />
               </div>
               <div className="mb-4">
-                <label className="block mb-2">Branch:</label>
+                <label className="block mb-2"><strong>Branch:</strong></label>
+                <p className="text-sm text-gray-600 mb-2">Branch name. Optional, defaults to repository&apos;s default branch.</p>
                 <input
                   type="text"
                   value={branch}
@@ -272,6 +287,7 @@ export default function PlaygroundForm({
                 />
               </div>
               <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-2">If false, won&apos;t reprocess if previously successful. Optional, default true.</p>
                 <label className="flex items-center">
                   <input
                     type="checkbox"
@@ -279,10 +295,11 @@ export default function PlaygroundForm({
                     onChange={(e) => setReload(e.target.checked)}
                     className="mr-2"
                   />
-                  Reload
+                  <strong>Reload</strong>
                 </label>
               </div>
               <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-2">If true, will notify you when indexing is complete. Optional, default false.</p>
                 <label className="flex items-center">
                   <input
                     type="checkbox"
@@ -290,7 +307,7 @@ export default function PlaygroundForm({
                     onChange={(e) => setNotify(e.target.checked)}
                     className="mr-2"
                   />
-                  Notify
+                  <strong>Notify</strong>
                 </label>
               </div>
             </div>
@@ -305,7 +322,8 @@ export default function PlaygroundForm({
           {showAdvanced && (
             <div className="mt-2 p-4 border rounded">
               <div className="mb-4">
-                <label className="block mb-2">Messages:</label>
+                <label className="block mb-2"><strong>Messages:</strong></label>
+                <p className="text-sm text-gray-600 mb-2">List of chat messages until now. For a single query, include only one entry in the list with a natural language query.</p>
                 {messages.map((message, index) => (
                   <div key={message.id} className="mb-2 p-2 border rounded">
                     <input
@@ -343,7 +361,8 @@ export default function PlaygroundForm({
                 </Button>
               </div>
               <div className="mb-4">
-                <label className="block mb-2">Repositories:</label>
+                <label className="block mb-2"><strong>Repositories:</strong></label>
+                <p className="text-sm text-gray-600 mb-2">List of repos that Greptile should reference while answering your question.</p>
                 {repositories.map((repo, index) => (
                   <div key={index} className="mb-2 p-2 border rounded">
                     <input
@@ -379,7 +398,8 @@ export default function PlaygroundForm({
                 </Button>
               </div>
               <div className="mb-4">
-                <label className="block mb-2">Session ID:</label>
+                <label className="block mb-2"><strong>Session ID:</strong></label>
+                <p className="text-sm text-gray-600 mb-2">Optional, defaults to a new session. Only use this if you intend to need to retrieve chat history later.</p>
                 <input
                   type="text"
                   value={sessionId}
@@ -389,6 +409,7 @@ export default function PlaygroundForm({
                 />
               </div>
               <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-2">Optional, default false.</p>
                 <label className="flex items-center">
                   <input
                     type="checkbox"
@@ -400,6 +421,7 @@ export default function PlaygroundForm({
                 </label>
               </div>
               <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-2">Optional, default false. Genius requests are smarter but 8-10 seconds slower, great for complex usecases like reviewing PR and updating technical docs.</p>
                 <label className="flex items-center">
                   <input
                     type="checkbox"
