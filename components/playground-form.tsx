@@ -35,8 +35,8 @@ export default function PlaygroundForm({
       setRepository('');
       setQuery('');
       setErrors({});
-      setRemote('');
-      setBranch('');
+      setRemote('github');
+      setBranch('main');
       setReload(false);
       setNotify(false);
       setMessages([]);
@@ -198,7 +198,7 @@ export default function PlaygroundForm({
         {showAuth && (
           <div className="mt-2 p-4 border rounded">
             <div className="mb-4">
-              <label className="block mb-2"><strong>Greptile API Key:</strong></label>
+              <label className="block mb-2"><strong>Greptile API Key: <span className="text-red-500">*</span></strong></label>
               <p className="text-sm text-gray-600 mb-2">Click <a href="https://app.greptile.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">here</a> to get your Greptile key. You will need to log in via GitHub or Microsoft.</p>
               <input
                 value={greptileApiKey}
@@ -208,7 +208,7 @@ export default function PlaygroundForm({
               {errors.greptileApiKey && <p className="text-red-500">{errors.greptileApiKey}</p>}
             </div>
             <div className="mb-4">
-              <label className="block mb-2"><strong>GitHub Access Token:</strong></label>
+              <label className="block mb-2"><strong>GitHub Access Token: <span className="text-red-500">*</span></strong></label>
               <p className="text-sm text-gray-600 mb-2">Click <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">here</a> to get your GitHub access token.</p>
               <input
                 value={githubAccessToken}
@@ -227,7 +227,7 @@ export default function PlaygroundForm({
         {showBasics && (
           <div className="mt-2 p-4 border rounded">
             <div className="mb-4">
-              <label className="block mb-2"><strong>Repository:</strong></label>
+              <label className="block mb-2"><strong>Repository: <span className="text-red-500">*</span></strong></label>
               <p className="text-sm text-gray-600 mb-2">Repository identifier in &quot;owner/repository&quot; format.</p>
               <input
                 type="text"
@@ -240,7 +240,7 @@ export default function PlaygroundForm({
             </div>
             {action === 'query' && (
               <div className="mb-4">
-                <label className="block mb-2"><strong>Query:</strong></label>
+                <label className="block mb-2"><strong>Query: <span className="text-red-500">*</span></strong></label>
                 <p className="text-sm text-gray-600 mb-2">Enter your query here. Be specific and include any relevant context.</p>
                 <textarea
                   value={query}
