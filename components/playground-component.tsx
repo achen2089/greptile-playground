@@ -11,6 +11,7 @@ export default function PlaygroundComponent() {
   const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
   const [action, setAction] = useState<PlaygroundAction>('index');
   const [lastResponses, setLastResponses] = useState<{[key in PlaygroundAction]?: HistoryItem}>({});
+  const [isNewRequest, setIsNewRequest] = useState(true);
 
   const handleSubmit = (newItem: Omit<HistoryItem, 'id' | 'timestamp'>) => {
     const item: HistoryItem = {
@@ -22,11 +23,14 @@ export default function PlaygroundComponent() {
     setSelectedItem(item);
     setAction(item.action);
     setLastResponses(prev => ({...prev, [item.action]: item}));
+    setIsNewRequest(false);
   };
 
   const handleHistoryItemClick = (item: HistoryItem) => {
     setSelectedItem(item);
     setAction(item.action);
+    setLastResponses(prev => ({...prev, [item.action]: item}));
+    setIsNewRequest(false);
   };
 
   const handleDeleteHistoryItem = (id: number) => {
@@ -39,11 +43,14 @@ export default function PlaygroundComponent() {
   const handleNewRequest = () => {
     setSelectedItem(null);
     setAction('index');
+    setLastResponses({});
+    setIsNewRequest(true);
   };
 
   const handleActionChange = (newAction: PlaygroundAction) => {
     setAction(newAction);
     setSelectedItem(lastResponses[newAction] || null);
+    setIsNewRequest(!lastResponses[newAction]);
   };
 
   return (
@@ -61,8 +68,9 @@ export default function PlaygroundComponent() {
           onSubmit={handleSubmit}
           action={action}
           setAction={handleActionChange}
+          isNewRequest={isNewRequest}
         />
-        {selectedItem && <ResponseDisplay item={selectedItem} />}
+        {selectedItem && !isNewRequest && <ResponseDisplay item={selectedItem} />}
       </div>
     </div>
   );

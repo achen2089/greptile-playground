@@ -9,6 +9,7 @@ export default function PlaygroundForm({
   onSubmit,
   action,
   setAction,
+  isNewRequest,
 }: PlaygroundFormProps) {
   const [repository, setRepository] = useState('');
   const [query, setQuery] = useState('');
@@ -18,13 +19,19 @@ export default function PlaygroundForm({
   const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
-    if (selectedItem) {
+    if (isNewRequest) {
+      setRepository('');
+      setQuery('');
+      setErrors({});
+    } else if (selectedItem) {
       setRepository(selectedItem.request.split(': ')[0]);
       if (selectedItem.action === 'query') {
         setQuery(selectedItem.request.split(': ')[1]);
+      } else {
+        setQuery('');
       }
     }
-  }, [selectedItem]);
+  }, [selectedItem, isNewRequest]);
 
   const validateInputs = (): boolean => {
     const newErrors: FormErrors = {};

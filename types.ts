@@ -34,6 +34,7 @@ export interface PlaygroundFormProps {
   onSubmit: (item: Omit<HistoryItem, 'id' | 'timestamp'>) => void;
   action: PlaygroundAction;
   setAction: (action: PlaygroundAction) => void;
+  isNewRequest: boolean;
 }
 
 // Define the props for the ResponseDisplay component
