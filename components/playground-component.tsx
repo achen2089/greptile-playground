@@ -7,6 +7,7 @@ interface HistoryItem {
   id: number;
   request: string;
   response: string;
+  timestamp: Date;
 }
 
 export default function PlaygroundComponent() {
@@ -19,7 +20,7 @@ export default function PlaygroundComponent() {
     // Here you would typically make an API call
     // For this example, we'll just echo the input
     const response = `Response for: ${input}`;
-    const newItem = { id: Date.now(), request: input, response };
+    const newItem = { id: Date.now(), request: input, response, timestamp: new Date() };
     setHistory([newItem, ...history]);
     setSelectedItem(newItem);
     setInput('');
@@ -44,6 +45,7 @@ export default function PlaygroundComponent() {
             onClick={() => handleHistoryItemClick(item)}
           >
             <p className="truncate">{item.request}</p>
+            <p className="text-xs text-gray-500">{item.timestamp.toLocaleString()}</p>
           </div>
         ))}
       </div>
@@ -65,6 +67,7 @@ export default function PlaygroundComponent() {
           <div className="border rounded p-4">
             <h3 className="text-lg font-semibold mb-2">Response</h3>
             <pre className="bg-gray-100 p-2 rounded">{selectedItem.response}</pre>
+            <p className="text-xs text-gray-500 mt-2">Timestamp: {selectedItem.timestamp.toLocaleString()}</p>
           </div>
         )}
       </div>
