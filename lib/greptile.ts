@@ -42,8 +42,8 @@ export async function queryRepository(repository: string, query: string, remote:
   genius?: boolean
 }): Promise<unknown> {
   const payload: QueryPayload = {
-    messages: options.messages && options.messages.length > 0 ? options.messages : [{ id: Date.now().toString(), content: query, role: "user" }],
-    repositories: options.repositories && options.repositories.length > 0 ? options.repositories : [{ remote, repository, branch }],
+    messages: options.messages?.length ? options.messages : [{ id: Date.now().toString(), content: query, role: "user" }],
+    repositories: options.repositories?.length ? options.repositories : [{ remote, repository, branch }],
     ...(options.sessionId && { sessionId: options.sessionId }),
     ...(options.stream !== undefined && { stream: options.stream }),
     ...(options.genius !== undefined && { genius: options.genius })
